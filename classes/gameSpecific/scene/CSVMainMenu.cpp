@@ -288,15 +288,6 @@ void CSVMainMenu::buttonPress(unsigned int x)
             if (layers < 1){layers = 1;}
             aspectChange();
             break;
-
-        case LEFTUPPERUI:
-            glfwSetWindowShouldClose(glfwGetCurrentContext(), true);
-            break;
-
-        case RIGHTUPPERUI:
-            // code for next scene
-            break;
-        default: ; // adding default makes a warning go away.
     }
 }
 
