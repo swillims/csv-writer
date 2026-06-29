@@ -1,6 +1,7 @@
 #include "CSVMainMenu.h"
 
 #include "singleton/dataHolder.h"
+#include "singleton/staticInput.h"
 
 enum MAINMENUBUTTONS
 {
@@ -36,20 +37,18 @@ void CSVMainMenu::onLoad()
 {
     Scene::onLoad();
 
-    // declared on StaticDraw Init
+    // simple shader declared on init
     shaderSimpleRef = StaticDraw::getShader("simple");
 
-    //if (!StaticDraw::imageFileRefs.contains("mainMenuBackground"))
-    //{
-    //    StaticDraw::loadImage("assets/core/background.png", "mainMenuBackground", false);
-    //}
-    //backgroundRef = StaticDraw::imageFileRefs["mainMenuBackground"];
-
+    // load ui texture
     if (!StaticDraw::imageFileRefs.contains("uiTexture"))
     {
         StaticDraw::loadImage("assets/gamespecific/png/ui_elems.png", "uiTexture", false);
     }
     uiTextureRef = StaticDraw::imageFileRefs["uiTexture"];
+
+    // set up click listening
+    StaticInput::MouseTrack(GLFW_MOUSE_BUTTON_LEFT);
 
     if (!alreadyLoaded)
     {
@@ -58,8 +57,8 @@ void CSVMainMenu::onLoad()
         ui.appendType<UIYSplits>(std::vector<float>{.1f,.9f})
             .appendType<UIXSplits>(std::vector<float>{.2f,.6f,.2f})
                 .appendType<UIXRatio>(2,true)
-                    .appendType<UIStack>(LEFTUPPERUI)
-                        .appendType<TexUVNode>(0,.5f,.75,1.0f).back()
+                    .appendType<UIStack>()
+                        .appendType<TexUVNode>(0,.5f,.75,1.0f,LEFTUPPERUI).back()
                         .appendType<UITextOneLine>(DataHolder::MEANMENU, upperLeftStr, .8 ).back()
                         .back()
                     .back()
@@ -67,8 +66,8 @@ void CSVMainMenu::onLoad()
                     .appendType<UITextOneLine>(DataHolder::MEANMENU,upperCenterStr,.5f).back()
                     .back()
                 .appendType<UIXRatio>(2,true)
-                    .appendType<UIStack>(RIGHTUPPERUI)
-                        .appendType<TexUVNode>(0,.5f,.75,1.0f).back()
+                    .appendType<UIStack>()
+                        .appendType<TexUVNode>(0,.5f,.75,1.0f,RIGHTUPPERUI).back()
                         .appendType<UITextOneLine>(DataHolder::MEANMENU, upperRightStr, .8 ).back()
                         .back()
                     .back()
@@ -109,7 +108,7 @@ void CSVMainMenu::onLoad()
                         .appendType<UIYHolder>()
                             .appendType<TexUVNode>(.5f,.75f,0.0f,.25f,ROWONEUP).back()
                             .appendType<UITextOneLine>(DataHolder::MEANMENU, rowsValue1, .8 ).back()
-                            .appendType<TexUVNode>(0.0f,.25f,0.0f,0.25f,ROWONEUP).back()
+                            .appendType<TexUVNode>(0.0f,.25f,0.0f,0.25f,ROWONEDOWN).back()
                             .back()
                         .appendType<UIYHolder>()
                             .appendType<TexUVNode>(.5f,.75f,0.0f,.25f,ROWTWOUP).back()
@@ -178,20 +177,164 @@ void CSVMainMenu::render(float time = 0, bool updateDisplay = true)
     Scene::render(time, updateDisplay);
 }
 
+void CSVMainMenu::buttonPress(unsigned int x)
+{
+    switch (x)
+    {
+        case LEFTUPPERUI :
+            glfwSetWindowShouldClose(glfwGetCurrentContext(), true);
+            break;
+
+        case RIGHTUPPERUI :
+            ; // add code for changing scenes
+            break;
+
+        case COLLUMNONEUP:
+            xSize += 1000;
+            if (xSize > 9999){xSize = 9999;}
+            aspectChange();
+            break;
+        case COLLUMNTWOUP :
+            xSize += 100;
+            if (xSize > 9999){xSize = 9999;}
+            aspectChange();
+            break;
+        case COLLUMNTHREEUP:
+            xSize += 10;
+            if (xSize > 9999){xSize = 9999;}
+            aspectChange();
+            break;
+        case COLLUMNFOURUP :
+            xSize += 1;
+            if (xSize > 9999){xSize = 9999;}
+            aspectChange();
+            break;
+
+        case COLLUMNONEDOWN:
+            xSize -= 1000;
+            if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
+            aspectChange();
+            break;
+        case COLLUMNTWODOWN :
+            xSize -= 100;
+            if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
+            aspectChange();
+            break;
+        case COLLUMNTHREEDOWN:
+            xSize -= 10;
+            if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
+            aspectChange();
+            break;
+        case COLLUMNFOURDOWN :
+            xSize -= 1;
+            if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
+            aspectChange();
+            break;
+
+        case ROWONEUP:
+            ySize += 1000;
+            if (ySize > 9999){ySize = 9999;}
+            aspectChange();
+            break;
+        case ROWTWOUP:
+            ySize += 100;
+            if (ySize > 9999){ySize = 9999;}
+            aspectChange();
+            break;
+        case ROWTHREEUP:
+            ySize += 10;
+            if (ySize > 9999){ySize = 9999;}
+            aspectChange();
+            break;
+        case ROWFOURUP:
+            ySize += 1;
+            if (ySize > 9999){ySize = 9999;}
+            aspectChange();
+            break;
+
+        case ROWONEDOWN:
+            ySize -= 1000;
+            if (ySize > 9999 || ySize == 0){ySize = 1;}
+            aspectChange();
+            break;
+        case ROWTWODOWN:
+            ySize -= 100;
+            if (ySize > 9999 || ySize == 0){ySize = 1;}
+            aspectChange();
+            break;
+        case ROWTHREEDOWN:
+            ySize -= 10;
+            if (ySize > 9999 || ySize == 0){ySize = 1;}
+            aspectChange();
+            break;
+        case ROWFOURDOWN:
+            ySize -= 1;
+            if (ySize > 9999 || ySize == 0){ySize = 1;}
+            aspectChange();
+            break;
+
+        case TILECOUNTUP:
+            tileTypes += 1;
+            aspectChange();
+            break;
+        case TILECOUNTDOWN:
+            tileTypes -= 1;
+            if (tileTypes < 1){tileTypes = 1;}
+            aspectChange();
+            break;
+
+        case LAYERCOUNTUP:
+            layers += 1;
+            aspectChange();
+            break;
+        case LAYERCOUNTDOWN:
+            layers -= 1;
+            if (layers < 1){layers = 1;}
+            aspectChange();
+            break;
+        default: ; // adding default makes a warning go away.
+    }
+    if (x==LEFTUPPERUI)
+    {
+        glfwSetWindowShouldClose(glfwGetCurrentContext(), true);
+    }
+    else if (x==RIGHTUPPERUI)
+    {
+        // code for next scene
+    }
+}
+
 void CSVMainMenu::processInput(float time, GLFWwindow *ww)
 {
-
+    StaticInput::Tick();
+    if (StaticInput::MouseClick(GLFW_MOUSE_BUTTON_LEFT))
+    {
+        double x, y;
+        StaticInput::GetMouse(x,y);
+        buttonPress(ui.findOneHover(x, y));
+    }
 }
 
 void CSVMainMenu::aspectChange()
 {
-    std::cout << "aspectChange\n";
+    // calculate strings
+    columnValue1 = std::to_string((xSize/1000)%10);
+    columnValue2 = std::to_string((xSize/100)%10);
+    columnValue3 = std::to_string((xSize/10)%10);
+    columnValue4 = std::to_string((xSize/1)%10);
+
+    rowsValue1 = std::to_string((ySize/1000)%10);
+    rowsValue2 = std::to_string((ySize/100)%10);
+    rowsValue3 = std::to_string((ySize/10)%10);
+    rowsValue4 = std::to_string((ySize/1)%10);
+
+    tileValue = std::to_string(tileTypes);
+    layerValue = std::to_string(layers);
+
+    // make new batches
     batch.clear();
     StaticWrite::SetUpChannel(DataHolder::MEANMENU);
     StaticDraw::updateView();
     ui.adjustNodeDefault();
     ui.renderVerts(batch);
-
-    std::cout << batch.size() << "\n";
-    // figure out text
 }

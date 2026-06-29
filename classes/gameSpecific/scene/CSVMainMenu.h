@@ -27,11 +27,16 @@ struct CSVMainMenu : Scene
     std::string layerTitle = "Layers";
     std::string layerValue = "0";
 
-
     // rendering
     unsigned int shaderSimpleRef;
     unsigned int uiTextureRef;
     std::vector<float> batch;
+
+    // data
+    unsigned int xSize = 10;
+    unsigned int ySize = 10;
+    unsigned int tileTypes = 2;
+    unsigned int layers = 1;
 
     //scene methods
     void onLoad() override;
@@ -39,5 +44,8 @@ struct CSVMainMenu : Scene
     void render(float time, bool updateDisplay) override;
     void processInput(float time, GLFWwindow *ww) override;
     void aspectChange() override;
+
+    //CSVMainMethods
+    void buttonPress(unsigned int x);
 };
 
