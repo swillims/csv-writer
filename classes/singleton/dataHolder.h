@@ -41,6 +41,12 @@ struct DataHolder
 	// trash collection
 	std::vector<TrashItem> trashList;
 
+	// enum for text channels to avoid overlap
+	enum TEXTCHANNEL
+	{
+		MEANMENU
+
+	};
 
 	// static funcs
 	static void init();

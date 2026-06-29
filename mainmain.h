@@ -27,8 +27,7 @@
 
 #include "scene/scene.h"
 
-// replace mainMenu import if you write your own intro scene. 
-#include "gameSpecific/scene/mainMenu.h"
+#include "gameSpecific/scene/CSVMainMenu.h"
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 static void processInput(GLFWwindow* window);
@@ -136,56 +135,9 @@ static int mainmainmain()
         }
     }
 
-    // sound settings
-    settingsFileName = "metadata/soundsettings";
-    if (util::fileExists(settingsFileName))
-    {
-        std::cout << "sound settings file exists\n";
-        std::vector<std::string> lines = util::split(util::readFile(settingsFileName),"\n");
-
-        // handle each line
-        for (std::string& line : lines) // it's ok to not use const here because string is not reused and is not a literal
-        {
-            util::removeComments(line, "#");
-            util::removeComments(line, "//");
-            std::vector<std::string> data = util::split(line, ":");
-            if (data.size() >1 )
-            {
-                util::sanitizeString(data[1], {" "});
-                try
-                {
-                    int n = std::stoi(data.at(1));
-                    g.uncategorizedData[data.at(0)] = n;
-                }
-                catch(std::exception e){}
-            }
-        }
-        if (g.uncategorizedData.contains("SOUND_MASTER"))
-        {
-            float m = g.getUnCatData<int>("SOUND_MASTER");
-            m /= 100;
-            StaticAudio::setMasterVollume(m);
-            g.deleteUnCatData("SOUND_MASTER");
-        }
-        if (g.checkKeyUnCatData("SOUND_MUSIC"))
-        {
-            float m = g.getUnCatData<int>("SOUND_MUSIC");
-            m /= 100;
-            StaticAudio::updateTagVollume("music", m);
-            g.deleteUnCatData("SOUND_MUSIC");
-        }
-        if (g.uncategorizedData.contains("SOUND_EFFECT"))
-        {
-            float m = g.getUnCatData<int>("SOUND_EFFECT");
-            m /= 100;
-            StaticAudio::updateTagVollume("soundEffect", m);
-            g.deleteUnCatData("SOUND_EFFECT");
-        }
-    }
-
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "BGL Game Window", NULL, NULL); // change string to change game name
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "CSV Writer", NULL, NULL); // change string to change game name
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -221,7 +173,7 @@ static int mainmainmain()
     glClearColor(0.25f, 0.25, 0.25f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     //StaticWrite::RenderText("Loading...", -50.0f, -50.0f, 0.5f, glm::vec3(1, 1, 1));
-    StaticWrite::AppendText(0, "Loading...", -.8f, -.2f, 0.006f, 0.006f);
+    StaticWrite::AppendText(0, "Loading...", -.95f, 0.0f, 0.2f, 0.2f);
     StaticWrite::StartWrite();
     StaticWrite::DrawChannel(0, glm::vec3(1, 1, 1));
     glfwSwapBuffers(window);
@@ -233,21 +185,18 @@ static int mainmainmain()
     // Order of Init calls does matter. StaticInput has to go after window specification.
     // - StaticInput's init doesn't create or change objects, so it is ok to modify it in the load code above.
     StaticInput::Init();
-    //StaticInput::singleton;//.init();
 
-    // replace MainMenu if you write your own.
-    // cleanest way to implement a new game is to modify Main menu instead of replacing it.
-    // main menu is located at assets/gameSpecific/scene/mainMenu.h because it should be modified and should be different for most builds.
-    DataHolder::SceneQueue(new MainMenu, false);
+    DataHolder::SceneQueue(new CSVMainMenu, false);
 
     //StaticDraw::init();
     std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
+
+    StaticDraw::cleanIndices();
 
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        StaticDraw::cleanIndices();
         std::chrono::steady_clock::time_point currentTime = std::chrono::steady_clock::now();
         std::chrono::duration<float> elapsed = currentTime - lastTime;
         float deltaTime = elapsed.count(); // in seconds
