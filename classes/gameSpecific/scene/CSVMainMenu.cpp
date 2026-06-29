@@ -144,13 +144,9 @@ void CSVMainMenu::onLoad()
                     .appendType<UIXHolder>()
                         .appendType<TexUVNode>(.75f, 1.0f, 0.0f,.25f,LAYERCOUNTDOWN).back()
                         .appendType<UITextOneLine>(DataHolder::MEANMENU, layerValue, .8 ).back()
-                        .appendType<TexUVNode>(.25f,.5f,0.0f,.25f,LAYERCOUNTUP).back()
-                        .back()
+                        .appendType<TexUVNode>(.25f,.5f,0.0f,.25f,LAYERCOUNTUP)
         ;
-
-
     }
-
     aspectChange();
 }
 
@@ -292,15 +288,15 @@ void CSVMainMenu::buttonPress(unsigned int x)
             if (layers < 1){layers = 1;}
             aspectChange();
             break;
+
+        case LEFTUPPERUI:
+            glfwSetWindowShouldClose(glfwGetCurrentContext(), true);
+            break;
+
+        case RIGHTUPPERUI:
+            // code for next scene
+            break;
         default: ; // adding default makes a warning go away.
-    }
-    if (x==LEFTUPPERUI)
-    {
-        glfwSetWindowShouldClose(glfwGetCurrentContext(), true);
-    }
-    else if (x==RIGHTUPPERUI)
-    {
-        // code for next scene
     }
 }
 
