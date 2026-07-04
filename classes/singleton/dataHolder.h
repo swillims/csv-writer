@@ -5,8 +5,6 @@
 #include<unordered_map>
 #include<any>
 
-//#include <map>
-
 struct DataHolder
 {
 	// local vars
@@ -26,9 +24,74 @@ struct DataHolder
 	// static vars
 	static DataHolder god;
 
-	// uncategorized data
-	// - it is generally better to use a type safe solution than void pointers but this technically works
-	// - it is dangerous to call or use this directly. The getter and setter methods are better approach.
+	// csv specific
+	std::vector<std::vector<int>> layers;
+	int layerX = 0;
+	int layerY = 0;
+	int layerZ = 0;
+	int layerElems = 0;
+
+	void resize(int x,int y,int z, int elems)
+	{
+		// vector with 0 values to fill empty bits
+
+
+		int yMin = std::min(y,layerZ);
+		int zMin = std::min(z, layerZ);
+		int xDif = x-layerX;
+		int yDif = y-layerY;
+		int newSize = x*y;
+		std::vector<int> v(newSize,0);
+
+		// This sub algo is untested. Expect it to not work.
+		for (int i = 0; i < zMin; i++)
+		{
+			if (xDif>0)
+			{
+				for (int j = 0; j < yMin; j++)
+				{
+					for (int k = 0; k < xDif; k++)
+					{
+						layers[i].insert(layers[i].begin() + (j*x + layerX), 0);
+					}
+				}
+			}
+			else if (yDif<0)
+			{
+				for (int j = 0; j < yMin; j++)
+				{
+					for (int k = 0; k < -xDif; k++)
+					{
+						layers[i].insert(layers[i].begin() + (j*layerX)+xDif, 0);
+					}
+				}
+			}
+			if (elems<layerElems)
+			{
+				for (int j = 0; j < layers[i].size(); j++)
+				{
+					if (layers[i][j]>=elems) { layers[i][j]=0; }
+				}
+			}
+			layers[i].resize(newSize, 0);
+		}
+
+		// add and remove layers
+		while (layers.size() != z)
+		{
+			if (layers.size() < z){layers.push_back(v);}
+			else{layers.pop_back();}
+		}
+
+		// change meta only after resizing because both metas are needed to resize
+		layerX = x;
+		layerY = y;
+		layerZ = z;
+		layerElems = elems;
+	}
+	static void Resize(int x,int y,int z, int elems){god.resize(x,y,z,elems);}
+
+
 	std::unordered_map<std::string, std::any> uncategorizedData;
 
 	// struct for trash collection
@@ -44,7 +107,8 @@ struct DataHolder
 	// enum for text channels to avoid overlap
 	enum TEXTCHANNEL
 	{
-		MEANMENU
+		MEANMENU,
+		EDITOR
 
 	};
 

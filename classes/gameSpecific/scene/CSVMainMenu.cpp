@@ -2,6 +2,7 @@
 
 #include "singleton/dataHolder.h"
 #include "singleton/staticInput.h"
+#include "gameSpecific/scene/Editor.h"
 
 enum MAINMENUBUTTONS
 {
@@ -177,20 +178,31 @@ void CSVMainMenu::buttonPress(unsigned int x)
 {
     switch (x)
     {
-        case LEFTUPPERUI :
+        case LEFTUPPERUI:
             glfwSetWindowShouldClose(glfwGetCurrentContext(), true);
             break;
 
-        case RIGHTUPPERUI :
-            ; // add code for changing scenes
+        case RIGHTUPPERUI:
+        {
+            // clear some things
+            batch.clear();
+            StaticWrite::SetUpChannel(DataHolder::MEANMENU);
+
+            // update dataholder
+            DataHolder::Resize(xSize,ySize,layers,tileTypes);
+
+            // set up new scene transition
+            Editor* editor = new Editor(this);
+            DataHolder::SceneQueue(editor);
             break;
+        }
 
         case COLLUMNONEUP:
             xSize += 1000;
             if (xSize > 9999){xSize = 9999;}
             aspectChange();
             break;
-        case COLLUMNTWOUP :
+        case COLLUMNTWOUP:
             xSize += 100;
             if (xSize > 9999){xSize = 9999;}
             aspectChange();
@@ -200,7 +212,7 @@ void CSVMainMenu::buttonPress(unsigned int x)
             if (xSize > 9999){xSize = 9999;}
             aspectChange();
             break;
-        case COLLUMNFOURUP :
+        case COLLUMNFOURUP:
             xSize += 1;
             if (xSize > 9999){xSize = 9999;}
             aspectChange();
@@ -211,7 +223,7 @@ void CSVMainMenu::buttonPress(unsigned int x)
             if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
             aspectChange();
             break;
-        case COLLUMNTWODOWN :
+        case COLLUMNTWODOWN:
             xSize -= 100;
             if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
             aspectChange();
@@ -221,7 +233,7 @@ void CSVMainMenu::buttonPress(unsigned int x)
             if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
             aspectChange();
             break;
-        case COLLUMNFOURDOWN :
+        case COLLUMNFOURDOWN:
             xSize -= 1;
             if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
             aspectChange();

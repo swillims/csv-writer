@@ -6,9 +6,6 @@
 	#include "singleton/gl_core.h"
 #endif
 
-// This is my first c++ project
-// - Deleting the next include statement breaks it because a scene that inherits this scene uses it.
-// - It is not worth refactoring.
 #include <vector>
 
 struct Scene
@@ -30,4 +27,10 @@ public:
 	virtual void aspectChange() {} 
 	// used to clean up assets
 	virtual void clean() { };
+};
+
+struct BackSceneStrict : Scene
+{
+	BackSceneStrict* previous = nullptr;
+	BackSceneStrict(BackSceneStrict* previous = nullptr) : previous(previous){};
 };

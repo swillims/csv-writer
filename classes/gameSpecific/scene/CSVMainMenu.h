@@ -3,7 +3,7 @@
 #include "scene/scene.h"
 #include "uiHelper.h"
 
-struct CSVMainMenu : Scene
+struct CSVMainMenu : BackSceneStrict
 {
     /// vars
     // ui
