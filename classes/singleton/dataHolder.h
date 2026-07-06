@@ -35,7 +35,7 @@ struct DataHolder
 	{
 		// vector with 0 values to fill empty bits
 
-
+		int xMin = std::min(x,layerX);
 		int yMin = std::min(y,layerZ);
 		int zMin = std::min(z, layerZ);
 		int xDif = x-layerX;
@@ -43,9 +43,27 @@ struct DataHolder
 		int newSize = x*y;
 		std::vector<int> v(newSize,0);
 
-		// This sub algo is untested. Expect it to not work.
+		// add and remove layers
+		while (layers.size() != z)
+		{
+			if (layers.size() < z){layers.push_back(v);}
+			else{layers.pop_back();}
+		}
+
+		// copy already existing layers
 		for (int i = 0; i < zMin; i++)
 		{
+			std::vector<int> newLayer;
+			newLayer.resize(newSize,0);
+			for (int j = 0; j < yMin; j++)
+			{
+				for (int k = 0; k < xMin; k++)
+				{
+					newLayer[k] = layers[i][j*x+k];
+				}
+			}
+			layers[i] = newLayer;
+			/*
 			if (xDif>0)
 			{
 				for (int j = 0; j < yMin; j++)
@@ -66,6 +84,7 @@ struct DataHolder
 					}
 				}
 			}
+			*/
 			if (elems<layerElems)
 			{
 				for (int j = 0; j < layers[i].size(); j++)
@@ -73,7 +92,8 @@ struct DataHolder
 					if (layers[i][j]>=elems) { layers[i][j]=0; }
 				}
 			}
-			layers[i].resize(newSize, 0);
+			//layers[i].resize(newSize, 0);
+
 		}
 
 		// add and remove layers
