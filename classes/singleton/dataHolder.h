@@ -36,7 +36,7 @@ struct DataHolder
 		// vector with 0 values to fill empty bits
 
 		int xMin = std::min(x,layerX);
-		int yMin = std::min(y,layerZ);
+		int yMin = std::min(y,layerY);
 		int zMin = std::min(z, layerZ);
 		int xDif = x-layerX;
 		int yDif = y-layerY;
@@ -51,15 +51,15 @@ struct DataHolder
 		}
 
 		// copy already existing layers
-		for (int i = 0; i < zMin; i++)
+		for (int i = 0; i < zMin; i++) // for every layer
 		{
 			std::vector<int> newLayer;
 			newLayer.resize(newSize,0);
-			for (int j = 0; j < yMin; j++)
+			for (int j = 0; j < yMin; j++) // for every y
 			{
-				for (int k = 0; k < xMin; k++)
+				for (int k = 0; k < xMin; k++) // for every x
 				{
-					newLayer[k] = layers[i][j*x+k];
+					newLayer[j*x+k] = layers[i][j*layerX+k];
 				}
 			}
 			layers[i] = newLayer;

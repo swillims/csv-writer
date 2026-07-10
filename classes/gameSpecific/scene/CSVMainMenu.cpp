@@ -193,7 +193,7 @@ void CSVMainMenu::buttonPress(unsigned int x)
 
             // set up new scene transition
             Editor* editor = new Editor(this);
-            DataHolder::SceneQueue(editor);
+            DataHolder::SceneQueue(editor, false);
             break;
         }
 
