@@ -78,6 +78,7 @@ void Editor::onLoad()
 
     // choosing to clear old ui instead of guard clause because this section will have dynamic element loading for different amounts elements/layers
     ui.nodes.clear();
+    elemStrings.clear();
 
     // build ui
     ui.appendType<UIYSplits>(std::vector<float>{.1f,.9f})
@@ -117,8 +118,26 @@ void Editor::onLoad()
                 .back()
             .appendType<UIYHolder>(ELEMCLICK)
     ;
+
     mapZone = &ui.findByKey(MAPCLICK);
     elemZone = &ui.findByKey(ELEMCLICK);
+
+    aspectChange();
+
+    for (int i = 0; i < tileTypes; i++)
+    {
+        ui.findByKey(ELEMCLICK).appendType<UIXRatio>(4,true)
+        //elemZone->appendType<UIXRatio>(20,true)
+            .appendType<UIXHolder>(i)
+                .appendType<UIStack>()
+                    .appendType<TexUVNode>(.5f,1.0f,.75f,1.0f).back()
+                    .appendType<UIXHolder>()
+
+                    .back()
+                .back()
+                .appendType<UITextOneLineConst>(DataHolder::EDITOR, "Entity " + std::to_string(i), .35f, XLEFT)
+        ;
+    };
 
     aspectChange();
 }
@@ -220,11 +239,8 @@ void Editor::mapPress()
     float fx = (mouseX - mapDims.xMin) / mapDims.xSize;
     float fy = (mouseY - mapDims.yMin) / mapDims.ySize;
 
-    std::cout<<"percents: " << fx << " " << fy << "\n";
     int ix = xSize * fx;
-    // int iy = ySize * fy;
     int iy = ySize * (1.0f - fy);
-    std::cout<<"array indexes: " << ix << " " << iy << "\n";
 
     int previousEntity = getMapValue(layerSelected,ix,iy);
     DataHolder::god.layers[layerSelected][ix + (iy * xSize)] = elemSelected;
@@ -244,15 +260,11 @@ void Editor::updateElemBatch(int layer, int elem)
 {
     if (elem < 0)
     {
-        std::cout << "element is negative\n";
         return;
     }
-    std::cout << "elem: " << elem << "\n";
     float xWidth = mapDims.xSize / xSize;
     float yWidth = mapDims.ySize / ySize;
-    std::cout<< "size debug 1 - Amount of Layers: " << layerBatches.size() << "\n";
     layerBatches[layer][elem].clear();
-    std::cout<< "size debug 2 - Amount of Elems: " << layerBatches[layer].size() << "\n";
     for (int y = 0; y < ySize; y++)
     {
         for (int x = 0; x < xSize; x++)
@@ -277,7 +289,6 @@ void Editor::updateElemBatch(int layer, int elem)
                         xMin, yMin, 0, 0,
                         xMin, yMax, 0, 1
                     });
-                std::cout << layerBatches[layer][elem].size() << std::endl;
             }
         }
     }

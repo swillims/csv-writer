@@ -8,7 +8,7 @@
 struct DataHolder
 {
 	// local vars
-	// // scene management
+	// scene management
 	Scene* currentScene;
 	Scene* nextScene;
 	bool queue = false;
@@ -38,8 +38,6 @@ struct DataHolder
 		int xMin = std::min(x,layerX);
 		int yMin = std::min(y,layerY);
 		int zMin = std::min(z, layerZ);
-		int xDif = x-layerX;
-		int yDif = y-layerY;
 		int newSize = x*y;
 		std::vector<int> v(newSize,0);
 
@@ -63,28 +61,7 @@ struct DataHolder
 				}
 			}
 			layers[i] = newLayer;
-			/*
-			if (xDif>0)
-			{
-				for (int j = 0; j < yMin; j++)
-				{
-					for (int k = 0; k < xDif; k++)
-					{
-						layers[i].insert(layers[i].begin() + (j*x + layerX), 0);
-					}
-				}
-			}
-			else if (yDif<0)
-			{
-				for (int j = 0; j < yMin; j++)
-				{
-					for (int k = 0; k < -xDif; k++)
-					{
-						layers[i].insert(layers[i].begin() + (j*layerX)+xDif, 0);
-					}
-				}
-			}
-			*/
+
 			if (elems<layerElems)
 			{
 				for (int j = 0; j < layers[i].size(); j++)
@@ -92,8 +69,6 @@ struct DataHolder
 					if (layers[i][j]>=elems) { layers[i][j]=0; }
 				}
 			}
-			//layers[i].resize(newSize, 0);
-
 		}
 
 		// add and remove layers

@@ -33,6 +33,7 @@ struct Editor : BackSceneStrict
     std::string upperLeftStr = "Back";
     std::string upperCenterStr = "Layer Not Loaded";
     std::string upperRightStr = "Next";
+    std::vector<std::string> elemStrings;
     UIElement* mapZone;
     UIElement* elemZone;
     UIDims mapDims;
