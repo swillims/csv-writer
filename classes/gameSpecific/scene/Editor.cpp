@@ -55,7 +55,7 @@ void Editor::onLoad()
             StaticDraw::useShader(batchTextures[i][j]);
             GLint colorLoc = glGetUniformLocation(batchTextures[i][j], "color");
             // change this to random later
-            glm::vec4 color = DataHolder::god.colorList[i*layers+j];
+            glm::vec4 color = DataHolder::god.colorList[i*layerSelected+j];
             glUniform4f(colorLoc, color.r, color.g, color.b, color.a);
             //glUniform4f(colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);
         }
@@ -254,10 +254,12 @@ void Editor::buttonPress(unsigned int x)
         }
         case LAYERLEFT:
         {
+            layerChange(layerSelected - 1);
             break;
         }
         case LAYERRIGHT:
         {
+            layerChange(layerSelected + 1);
             break;
         }
     }
@@ -334,6 +336,10 @@ void Editor::updateElemBatch(int layer, int elem)
     }
     float xWidth = mapDims.xSize / xSize;
     float yWidth = mapDims.ySize / ySize;
+    float powSquare = (1 - std::pow(.5f, layer/2))/2;
+    std::cout << layer << " " << elem << " " << powSquare << std::endl;
+    float xSquareAdjust = xWidth * powSquare;
+    float ySquareAdjust = yWidth * powSquare;
     layerBatches[layer][elem].clear();
     for (int y = 0; y < ySize; y++)
     {
@@ -343,25 +349,63 @@ void Editor::updateElemBatch(int layer, int elem)
             {
                 float xMin = mapDims.xMin + (x * xWidth);
                 float xMax = xMin + xWidth;
-
+                xMin += xSquareAdjust;
+                xMax -= xSquareAdjust;
                 float yMin = mapDims.yMin + mapDims.ySize - ((y + 1) * yWidth); // this is backwards and that is ok for now easy fix later
                 float yMax = yMin + yWidth;
+                yMin += ySquareAdjust;
+                yMax -= ySquareAdjust;
+                if (layer%2==0)
+                {
+                    layerBatches[layer][elem].insert(
+                        layerBatches[layer][elem].end(),
+                        {
+                            xMax, yMax, 1, 1,
+                            xMax, yMin, 1, 0,
+                            xMin, yMin, 0, 0,
 
-
-                layerBatches[layer][elem].insert(
-                    layerBatches[layer][elem].end(),
-                    {
-                        xMax, yMax, 1, 1,
-                        xMax, yMin, 1, 0,
-                        xMin, yMin, 0, 0,
-
-                        xMax, yMax, 1, 1,
-                        xMin, yMin, 0, 0,
-                        xMin, yMax, 0, 1
+                            xMax, yMax, 1, 1,
+                            xMin, yMin, 0, 0,
+                            xMin, yMax, 0, 1
                     });
+                }
+                else
+                {
+                    float xCenter = (xMin + xMax) / 2;
+                    float yCenter = (yMin+yMax) / 2;
+                    layerBatches[layer][elem].insert(
+                        layerBatches[layer][elem].end(),
+                        {
+                            xMax, yCenter, 1, 1,
+                            xCenter, yMin, 1, 0,
+                            xMin, yCenter, 0, 0,
+
+                            xMax, yCenter, 1, 1,
+                            xCenter, yMax, 0, 0,
+                            xMin, yCenter, 0, 1
+                    });
+                }
             }
         }
     }
+}
+
+void Editor::layerChange(int l)
+{
+    layerSelected = l;
+    if (layerSelected < 0){layerSelected=layers-1;}
+    else if (layerSelected >= layers){layerSelected=0;}
+
+    for (int i = 0; i < tileTypes; i++)
+    {
+        glm::vec4 color = DataHolder::god.colorList[i+layerSelected*tileTypes];
+        elemColorSubValues[i*4+0] = color.r;
+        elemColorSubValues[i*4+1] = color.g;
+        elemColorSubValues[i*4+2] = color.b;
+        elemColorSubValues[i*4+3] = color.a;
+    }
+    upperCenterStr = "layer: " + std::to_string(layerSelected);
+    aspectChange();
 }
 
 void Editor::updateMapBatches()

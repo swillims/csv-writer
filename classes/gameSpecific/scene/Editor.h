@@ -23,7 +23,7 @@ struct Editor : BackSceneStrict
     Editor(BackSceneStrict* scene) : BackSceneStrict(scene){};
 
     // editing ints
-    int elemSelected = 1;
+    int elemSelected = 0;
     int layerSelected = 0;
     double mouseX = 0;
     double mouseY = 0;
@@ -72,5 +72,6 @@ struct Editor : BackSceneStrict
     int getMapValue(int layer, int x, int y);
     void updateElemBatch(int elem);
     void updateElemBatch(int layer, int elem);
+    void layerChange(int l);
     void updateMapBatches();
 };
