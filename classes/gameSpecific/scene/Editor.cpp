@@ -304,9 +304,9 @@ void Editor::elemPress()
         elemColorSubValues[elemPicked] = fy;
 
         int i = elemPicked % 4;
-        elemPicked = i;
         // add math for layers here?
         int j = elemPicked / 4;
+        elemSelected = j;
 
         glm::vec4& color = DataHolder::god.colorList[j]; // add layers later
         StaticDraw::useShader(batchTextures[layerSelected][j]);
