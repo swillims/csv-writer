@@ -246,6 +246,30 @@ struct UIXShifter : UIContainer
     }
 };
 
+struct UIYShifter : UIContainer
+{
+    float& yBottom;   // 0.0 to 1.0
+    float& ySubSize;  // 0.0 to 1.0
+
+    UIYShifter(float& yBottom, float& ySubSize, int key = -1)
+        : UIContainer(key), yBottom(yBottom), ySubSize(ySubSize) {}
+
+    void adjustNode(float xMin, float yMin, float xSize, float ySize) override
+    {
+        UIElement::adjustNode(xMin, yMin, xSize, ySize);
+
+        if (!nodes.empty())
+        {
+            nodes[0]->adjustNode(
+                xMin,
+                yMin + ySize * yBottom,
+                xSize,
+                ySize * ySubSize
+            );
+        }
+    }
+};
+
 struct UIStack : UIContainer
 {
     UIStack(float xMin = 0.f, float yMin = 0.f, float xSize = 1.f, float ySize = 1.f, int key = -1)

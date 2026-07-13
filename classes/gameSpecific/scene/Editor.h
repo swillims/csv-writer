@@ -34,6 +34,8 @@ struct Editor : BackSceneStrict
     std::string upperCenterStr = "Layer Not Loaded";
     std::string upperRightStr = "Next";
     std::vector<std::string> elemStrings;
+    std::vector<float> elemColorSubValues;
+    float elemColorSelecterWidth = .1;
     UIElement* mapZone;
     UIElement* elemZone;
     UIDims mapDims;
@@ -63,7 +65,9 @@ struct Editor : BackSceneStrict
 
     //Editor
     void buttonPress(unsigned int x);
+    void clickHeld(unsigned int x);
     void mapPress();
+    void elemPress();
     int getMapValue(int x, int y);
     int getMapValue(int layer, int x, int y);
     void updateElemBatch(int elem);

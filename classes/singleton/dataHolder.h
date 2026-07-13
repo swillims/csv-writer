@@ -3,6 +3,8 @@
 #include "scene/scene.h"
 #include<string>
 #include<unordered_map>
+#include <glm/glm.hpp>
+#include <random>
 #include<any>
 
 struct DataHolder
@@ -26,6 +28,7 @@ struct DataHolder
 
 	// csv specific
 	std::vector<std::vector<int>> layers;
+	std::vector<glm::vec4> colorList;
 	int layerX = 0;
 	int layerY = 0;
 	int layerZ = 0;
@@ -38,6 +41,7 @@ struct DataHolder
 		int xMin = std::min(x,layerX);
 		int yMin = std::min(y,layerY);
 		int zMin = std::min(z, layerZ);
+		int elemMin = std::min(elems,layerElems);
 		int newSize = x*y;
 		std::vector<int> v(newSize,0);
 
@@ -77,6 +81,44 @@ struct DataHolder
 			if (layers.size() < z){layers.push_back(v);}
 			else{layers.pop_back();}
 		}
+
+		std::vector<glm::vec4> newColors;
+
+		std::random_device rd;
+		std::mt19937 rng(rd());
+		std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+		float randValue; // = dist(rng);
+
+		// using different algorythm because I want random values instead of 0'ed ints
+		// - propagate a list of random values before copying over old values
+		// - could be optimized to include old values // but that would have higher dev cost from algo
+		for (int i = 0; i < z; i++)
+		{
+			for (int j = 0; j < elems; j++)
+			{
+				float a;
+				if (j == 0 && i > 0)
+				{
+					a = 0;
+				}
+				else
+				{
+					a = 1;
+				}
+
+				newColors.emplace_back(dist(rng),dist(rng),dist(rng),a);
+			}
+		}
+
+		for (int i = 0; i < zMin; i++) // for each layer
+		{
+			for (int j = 0; j < elemMin; j++)
+			{
+				newColors[j + i*elems] = colorList[j + i*layerElems];
+			}
+		}
+
+		colorList = newColors;
 
 		// change meta only after resizing because both metas are needed to resize
 		layerX = x;

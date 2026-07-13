@@ -55,12 +55,14 @@ void Editor::onLoad()
             StaticDraw::useShader(batchTextures[i][j]);
             GLint colorLoc = glGetUniformLocation(batchTextures[i][j], "color");
             // change this to random later
-            glUniform4f(colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);
+            glm::vec4 color = DataHolder::god.colorList[i*layers+j];
+            glUniform4f(colorLoc, color.r, color.g, color.b, color.a);
+            //glUniform4f(colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);
         }
     }
-    StaticDraw::useShader(batchTextures[0][0]);
-    GLint colorLoc = glGetUniformLocation(batchTextures[0][0], "color");
-    glUniform4f(colorLoc, 1.0f, 0.0f, 0.0f, 0.5f);
+    //StaticDraw::useShader(batchTextures[0][0]);
+    //GLint colorLoc = glGetUniformLocation(batchTextures[0][0], "color");
+    //glUniform4f(colorLoc, 1.0f, 0.0f, 0.0f, 0.5f);
 
     // load ui texture
     if (!StaticDraw::imageFileRefs.contains("uiTexture"))
@@ -73,6 +75,11 @@ void Editor::onLoad()
 
     // set up click listening
     StaticInput::MouseTrack(GLFW_MOUSE_BUTTON_LEFT);
+    // set up key listening
+    for (int i = GLFW_KEY_0; i < GLFW_KEY_0 + tileTypes; i++)
+    {
+        StaticInput::KeyTrack(i);
+    }
 
     ratio = static_cast<float>(xSize) / static_cast<float>(ySize);
 
@@ -116,25 +123,43 @@ void Editor::onLoad()
                     .appendType<TexUVNode>(0,.001f,.999f,1.0f,MAPCLICK).back()
                     .back()
                 .back()
-            .appendType<UIYHolder>(ELEMCLICK)
+            .appendType<UIYHolder>(ELEMCLICK).appendType<UIYHolder>()
     ;
 
     mapZone = &ui.findByKey(MAPCLICK);
     elemZone = &ui.findByKey(ELEMCLICK);
 
     aspectChange();
-
+    // Done in a separate loop to avoid a bug with elements shifting. It looks weird because it is.
     for (int i = 0; i < tileTypes; i++)
     {
-        ui.findByKey(ELEMCLICK).appendType<UIXRatio>(4,true)
-        //elemZone->appendType<UIXRatio>(20,true)
-            .appendType<UIXHolder>(i)
+        glm::vec4 color = DataHolder::god.colorList[i];
+        elemColorSubValues.push_back(color.r);
+        elemColorSubValues.push_back(color.g);
+        elemColorSubValues.push_back(color.b);
+        elemColorSubValues.push_back(color.a);
+    }
+    for (int i = 0; i < tileTypes; i++)
+    {
+        ui.findByKey(ELEMCLICK)[0].appendType<UIXRatio>(4,true)
+            .appendType<UIXHolder>()
                 .appendType<UIStack>()
                     .appendType<TexUVNode>(.5f,1.0f,.75f,1.0f).back()
                     .appendType<UIXHolder>()
-
+                        .appendType<UIYShifter>(elemColorSubValues[i*4 + 0], elemColorSelecterWidth, i*4 + 0)
+                            .appendType<TexUVNode>(0,.001f,.999f,1.0f).back()
+                            .back()
+                        .appendType<UIYShifter>(elemColorSubValues[i*4 + 1], elemColorSelecterWidth, i*4 + 1)
+                            .appendType<TexUVNode>(0,.001f,.999f,1.0f).back()
+                            .back()
+                        .appendType<UIYShifter>(elemColorSubValues[i*4 + 2], elemColorSelecterWidth, i*4 + 2)
+                            .appendType<TexUVNode>(0,.001f,.999f,1.0f).back()
+                            .back()
+                        .appendType<UIYShifter>(elemColorSubValues[i*4 + 3], elemColorSelecterWidth, i*4 + 3)
+                            .appendType<TexUVNode>(0,.001f,.999f,1.0f).back()
+                            .back()
+                        .back()
                     .back()
-                .back()
                 .appendType<UITextOneLineConst>(DataHolder::EDITOR, "Entity " + std::to_string(i), .35f, XLEFT)
         ;
     };
@@ -178,10 +203,23 @@ void Editor::render(float time, bool updateDisplay)
 void Editor::processInput(float time, GLFWwindow *ww)
 {
     StaticInput::Tick();
-    if (StaticInput::MouseClick(GLFW_MOUSE_BUTTON_LEFT))
+    if (StaticInput::MouseHeld(GLFW_MOUSE_BUTTON_LEFT))
     {
         StaticInput::GetMouse(mouseX,mouseY);
+        clickHeld(ui.findOneHover(mouseX, mouseY));
+    }
+    if (StaticInput::MouseClick(GLFW_MOUSE_BUTTON_LEFT))
+    {
+        // redundant but left in as a comment to avoid thinking I forgot to include it
+        //StaticInput::GetMouse(mouseX,mouseY);
         buttonPress(ui.findOneHover(mouseX, mouseY));
+    }
+    for (int i = 0; i < tileTypes; i++)
+    {
+        if (StaticInput::KeyClick(GLFW_KEY_0+i))
+        {
+            elemSelected = i;
+        }
     }
 }
 
@@ -222,6 +260,13 @@ void Editor::buttonPress(unsigned int x)
         {
             break;
         }
+    }
+}
+
+void Editor::clickHeld(unsigned int x)
+{
+    switch (x)
+    {
         case MAPCLICK:
         {
             mapPress();
@@ -229,6 +274,7 @@ void Editor::buttonPress(unsigned int x)
         }
         case ELEMCLICK:
         {
+            elemPress();
             break;
         }
     }
@@ -246,6 +292,30 @@ void Editor::mapPress()
     DataHolder::god.layers[layerSelected][ix + (iy * xSize)] = elemSelected;
     updateElemBatch(layerSelected,elemSelected);
     updateElemBatch(layerSelected, previousEntity);
+}
+
+void Editor::elemPress()
+{
+    int elemPicked = (*elemZone)[0].findOneHover(mouseX, mouseY);
+    if (elemPicked != -1)
+    {
+        UIElement& bar = (*elemZone)[0].findByKey(elemPicked);
+        float fy = (mouseY - bar.yMin) / bar.ySize;
+        elemColorSubValues[elemPicked] = fy;
+
+        int i = elemPicked % 4;
+        elemPicked = i;
+        // add math for layers here?
+        int j = elemPicked / 4;
+
+        glm::vec4& color = DataHolder::god.colorList[j]; // add layers later
+        StaticDraw::useShader(batchTextures[layerSelected][j]);
+        GLint colorLoc = glGetUniformLocation(batchTextures[layerSelected][j], "color");
+        color[i] = fy;
+        glUniform4f(colorLoc, color.r, color.g, color.b, color.a);
+
+        aspectChange();
+    }
 }
 
 int Editor::getMapValue(int x, int y){return getMapValue(layerSelected, x, y);}
