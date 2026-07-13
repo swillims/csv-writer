@@ -55,7 +55,7 @@ void Editor::onLoad()
             StaticDraw::useShader(batchTextures[i][j]);
             GLint colorLoc = glGetUniformLocation(batchTextures[i][j], "color");
             // change this to random later
-            glm::vec4 color = DataHolder::god.colorList[i*layerSelected+j];
+            glm::vec4 color = DataHolder::god.colorList[i*layers+j];
             glUniform4f(colorLoc, color.r, color.g, color.b, color.a);
             //glUniform4f(colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);
         }
@@ -306,11 +306,10 @@ void Editor::elemPress()
         elemColorSubValues[elemPicked] = fy;
 
         int i = elemPicked % 4;
-        // add math for layers here?
         int j = elemPicked / 4;
         elemSelected = j;
 
-        glm::vec4& color = DataHolder::god.colorList[j]; // add layers later
+        glm::vec4& color = DataHolder::god.colorList[j+layerSelected*tileTypes];
         StaticDraw::useShader(batchTextures[layerSelected][j]);
         GLint colorLoc = glGetUniformLocation(batchTextures[layerSelected][j], "color");
         color[i] = fy;
