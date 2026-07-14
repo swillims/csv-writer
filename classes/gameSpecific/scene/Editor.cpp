@@ -54,15 +54,10 @@ void Editor::onLoad()
             batchTextures[i].push_back(StaticDraw::getShader(uiName));
             StaticDraw::useShader(batchTextures[i][j]);
             GLint colorLoc = glGetUniformLocation(batchTextures[i][j], "color");
-            // change this to random later
             glm::vec4 color = DataHolder::god.colorList[i*layers+j];
             glUniform4f(colorLoc, color.r, color.g, color.b, color.a);
-            //glUniform4f(colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);
         }
     }
-    //StaticDraw::useShader(batchTextures[0][0]);
-    //GLint colorLoc = glGetUniformLocation(batchTextures[0][0], "color");
-    //glUniform4f(colorLoc, 1.0f, 0.0f, 0.0f, 0.5f);
 
     // load ui texture
     if (!StaticDraw::imageFileRefs.contains("uiTexture"))
@@ -97,7 +92,6 @@ void Editor::onLoad()
                     .back()
                 .back()
             .appendType<UIXRatio>(6,true)
-                //.appendType<UITextOneLine>(DataHolder::EDITOR,upperCenterStr,.5f).back()
                 .appendType<UIXSplits>(std::vector<float>{.1f,.8f,.1f})
                     .appendType<UIXRatio>(1,true)
                         .appendType<TexUVNode>(.75f, 1.0f, 0.0f,.25f,LAYERLEFT).back()
@@ -129,7 +123,6 @@ void Editor::onLoad()
     mapZone = &ui.findByKey(MAPCLICK);
     elemZone = &ui.findByKey(ELEMCLICK);
 
-    aspectChange();
     // Done in a separate loop to avoid a bug with elements shifting. It looks weird because it is.
     for (int i = 0; i < tileTypes; i++)
     {
@@ -164,6 +157,7 @@ void Editor::onLoad()
         ;
     };
 
+    layerChange(layerSelected);
     aspectChange();
 }
 
@@ -210,8 +204,6 @@ void Editor::processInput(float time, GLFWwindow *ww)
     }
     if (StaticInput::MouseClick(GLFW_MOUSE_BUTTON_LEFT))
     {
-        // redundant but left in as a comment to avoid thinking I forgot to include it
-        //StaticInput::GetMouse(mouseX,mouseY);
         buttonPress(ui.findOneHover(mouseX, mouseY));
     }
     for (int i = 0; i < tileTypes; i++)
@@ -293,7 +285,10 @@ void Editor::mapPress()
     int previousEntity = getMapValue(layerSelected,ix,iy);
     DataHolder::god.layers[layerSelected][ix + (iy * xSize)] = elemSelected;
     updateElemBatch(layerSelected,elemSelected);
-    updateElemBatch(layerSelected, previousEntity);
+    if (previousEntity != -1)
+    {
+        updateElemBatch(layerSelected, previousEntity);
+    }
 }
 
 void Editor::elemPress()
@@ -336,7 +331,6 @@ void Editor::updateElemBatch(int layer, int elem)
     float xWidth = mapDims.xSize / xSize;
     float yWidth = mapDims.ySize / ySize;
     float powSquare = (1 - std::pow(.5f, layer/2))/2;
-    std::cout << layer << " " << elem << " " << powSquare << std::endl;
     float xSquareAdjust = xWidth * powSquare;
     float ySquareAdjust = yWidth * powSquare;
     layerBatches[layer][elem].clear();
