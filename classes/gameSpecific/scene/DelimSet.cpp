@@ -7,14 +7,14 @@ enum BUTTONS
     LEFTUPPERUI,
     RIGHTUPPERUI,
 
-    ENTITYDELIMDEFAULT,
-    ENTITYDELIMEDIT,
+    ENTITYDEFAULT,
+    ENTITYEDIT,
 
-    LINEDELIMDEFAULT,
-    LINEDELIMEDIT,
+    LINEDEFAULT,
+    LINEEDIT,
 
-    LAYERDELIMDEFAULT,
-    LAYERDELIMEDIT,
+    LAYERDEFAULT,
+    LAYEREDIT,
 };
 
 void DelimSet::onLoad()
@@ -22,8 +22,11 @@ void DelimSet::onLoad()
     BackSceneStrict::onLoad();
 
     entityDelim = DataHolder::god.entityDelim;
+    entityString = "Entity: \"" + util::translateToHumanReadable(entityDelim) + "\"";
     lineDelim = DataHolder::god.lineDelim;
+    lineString = "Line: \"" + util::translateToHumanReadable(lineDelim) + "\"";
     layerDelim = DataHolder::god.layerDelim;
+    layerString = "Layer: \"" + util::translateToHumanReadable(layerDelim) + "\"";
 
     shaderSimpleRef = StaticDraw::getShader("simple");
 
@@ -53,11 +56,66 @@ void DelimSet::onLoad()
                 .appendType<UIXRatio>(2,true)
                     .appendType<UIStack>()
                         .appendType<TexUVNode>(0,.5f,.75,1.0f,RIGHTUPPERUI).back()
-                        .appendType<UITextOneLine>(DataHolder::DELIMSET, upperRightStr, .8 ).back()
+                        .appendType<UITextOneLine>(DataHolder::DELIMSET, upperRightStr, .8f).back()
                         .back()
                     .back()
                 .back()
-
+            .appendType<UIYHolder>()
+                .appendType<UIXHolder>()
+                    .appendType<UITextOneLine>(DataHolder::DELIMSET,entityString,.2f).back()
+                    .appendType<UIXHolder>()
+                        .appendType<UIXRatio>(2,true)
+                            .appendType<UIStack>()
+                                .appendType<TexUVNode>(0,.5f,.75,1.0f,ENTITYDEFAULT).back()
+                                .appendType<UITextOneLine>(DataHolder::DELIMSET, resetString, .6f).back()
+                                .back()
+                            .back()
+                        .appendType<UIXRatio>(2,true)
+                            .appendType<UIStack>()
+                                .appendType<TexUVNode>(0,.5f,.75,1.0f,ENTITYEDIT).back()
+                                .appendType<UITextOneLine>(DataHolder::DELIMSET, setString, .6f).back()
+                                .back()
+                            .back()
+                        .back()
+                    .back()
+                .appendType<UIXHolder>()
+                    .appendType<UIXHolder>()
+                        .appendType<UITextOneLine>(DataHolder::DELIMSET,lineString,.2f).back()
+                        .appendType<UIXHolder>()
+                            .appendType<UIXRatio>(2,true)
+                                .appendType<UIStack>()
+                                    .appendType<TexUVNode>(0,.5f,.75,1.0f,LINEDEFAULT).back()
+                                    .appendType<UITextOneLine>(DataHolder::DELIMSET, resetString, .6f).back()
+                                    .back()
+                                .back()
+                            .appendType<UIXRatio>(2,true)
+                                .appendType<UIStack>()
+                                    .appendType<TexUVNode>(0,.5f,.75,1.0f,LINEEDIT).back()
+                                    .appendType<UITextOneLine>(DataHolder::DELIMSET, setString, .6f).back()
+                                    .back()
+                                .back()
+                            .back()
+                        .back()
+                    .back()
+                .appendType<UIXHolder>()
+                    .appendType<UIXHolder>()
+                        .appendType<UITextOneLine>(DataHolder::DELIMSET,layerString,.2f).back()
+                        .appendType<UIXHolder>()
+                            .appendType<UIXRatio>(2,true)
+                                .appendType<UIStack>()
+                                    .appendType<TexUVNode>(0,.5f,.75,1.0f,LAYERDEFAULT).back()
+                                    .appendType<UITextOneLine>(DataHolder::DELIMSET, resetString, .6f).back()
+                                    .back()
+                                .back()
+                            .appendType<UIXRatio>(2,true)
+                                .appendType<UIStack>()
+                                    .appendType<TexUVNode>(0,.5f,.75,1.0f,LAYEREDIT).back()
+                                    .appendType<UITextOneLine>(DataHolder::DELIMSET, setString, .6f).back()
+                                    .back()
+                                .back()
+                            .back()
+                        .back()
+                    .back()
         ;
     }
 
@@ -104,7 +162,7 @@ void DelimSet::aspectChange()
 
     // make new batches
     batch.clear();
-    StaticWrite::SetUpChannel(DataHolder::EDITOR);
+    StaticWrite::SetUpChannel(DataHolder::DELIMSET);
     StaticDraw::updateView();
     ui.adjustNodeDefault();
     ui.renderVerts(batch);

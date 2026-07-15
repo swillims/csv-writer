@@ -11,14 +11,20 @@ struct  DelimSet : BackSceneStrict
 
     // ui
     UIBase ui;
+    bool alreadyLoaded = false;
     std::string upperLeftStr = "Back";
     std::string upperCenterStr = "Update Delimiters";
     std::string upperRightStr = "Next";
-    bool alreadyLoaded = false;
+    std::string entityString = "Entity: ";
+    std::string lineString = "End of Line: ";
+    std::string layerString = "Layer: ";
+    std::string resetString = "Reset";
+    std::string setString = "Set";
+
 
     // data
     std::string entityDelim = ",";
-    std::string lineDelim = "\n";
+    std::string lineDelim = "\\n";
     std::string layerDelim = "|";
 
     // rendering
