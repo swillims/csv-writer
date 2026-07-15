@@ -27,12 +27,18 @@ struct DataHolder
 	static DataHolder god;
 
 	// csv specific
+	// Editor
 	std::vector<std::vector<int>> layers;
 	std::vector<glm::vec4> colorList;
 	int layerX = 0;
 	int layerY = 0;
 	int layerZ = 0;
 	int layerElems = 0;
+
+	// Delimiters
+	std::string entityDelim = ",";
+	std::string lineDelim = "\n";
+	std::string layerDelim = "|"; // <- "pipe" not "l"
 
 	void resize(int x,int y,int z, int elems)
 	{
@@ -145,7 +151,8 @@ struct DataHolder
 	enum TEXTCHANNEL
 	{
 		MEANMENU,
-		EDITOR
+		EDITOR,
+		DELIMSET,
 
 	};
 

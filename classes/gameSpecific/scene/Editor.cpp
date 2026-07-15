@@ -1,6 +1,7 @@
 #include "Editor.h"
 
 #include "singleton/staticInput.h"
+#include "DelimSet.h"
 
 enum BUTTONS
 {
@@ -242,6 +243,13 @@ void Editor::buttonPress(unsigned int x)
         }
         case RIGHTUPPERUI:
         {
+            // clear some things
+            batch.clear();
+            StaticWrite::SetUpChannel(DataHolder::EDITOR);
+
+            // set up new scene transition
+            DelimSet* delimSet = new DelimSet(this);
+            DataHolder::SceneQueue(delimSet, false);
             break;
         }
         case LAYERLEFT:
