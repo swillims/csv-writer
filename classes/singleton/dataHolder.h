@@ -36,9 +36,12 @@ struct DataHolder
 	int layerElems = 0;
 
 	// Delimiters
-	std::string entityDelim = ",";
-	std::string lineDelim = "\n";
-	std::string layerDelim = "|"; // <- "pipe" not "l"
+	const std::string entityDelimDefault = ",";
+	std::string entityDelim = entityDelimDefault;
+	const std::string lineDelimDefault = "\n";
+	std::string lineDelim = lineDelimDefault;
+	const std::string layerDelimDefault = "\n\t";
+	std::string layerDelim = layerDelimDefault; // <- "pipe" not "l"
 
 	void resize(int x,int y,int z, int elems)
 	{
@@ -153,6 +156,8 @@ struct DataHolder
 		MEANMENU,
 		EDITOR,
 		DELIMSET,
+
+		STRINGEDIT,
 
 	};
 

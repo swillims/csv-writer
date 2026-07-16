@@ -20,12 +20,16 @@ struct  DelimSet : BackSceneStrict
     std::string layerString = "Layer: ";
     std::string resetString = "Reset";
     std::string setString = "Set";
-
+    float entityFloat = 1.0f;
+    float lineFloat = 1.0f;
+    float layerFloat = 1.0f;
+    // this number is a guestimate. It is based on font and guessed average size+distance of chars.
+    // - more professional answer would be to create a separate channel textChannel for each UIXRef and calculate based on width.
+    // -- This is for personal use and that is 2/10 difficult task, so I'm not doing it.
+    float stringToFloatConstant = 0.6f;
 
     // data
-    std::string entityDelim = ",";
-    std::string lineDelim = "\\n";
-    std::string layerDelim = "|";
+    // handled externally directly in dataholder
 
     // rendering
     unsigned int shaderSimpleRef;
@@ -39,6 +43,6 @@ struct  DelimSet : BackSceneStrict
     void processInput(float time, GLFWwindow *ww) override;
     void aspectChange() override;
 
-    //Delim Specific
+    //DelimSet Specific
     void buttonPress(unsigned int x);
 };
