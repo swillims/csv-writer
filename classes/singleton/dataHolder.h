@@ -43,6 +43,9 @@ struct DataHolder
 	const std::string layerDelimDefault = "\n\t";
 	std::string layerDelim = layerDelimDefault; // <- "pipe" not "l"
 
+	// Entity Strings
+	std::vector<std::string> entityStrings;
+
 	void resize(int x,int y,int z, int elems)
 	{
 		// vector with 0 values to fill empty bits
@@ -126,8 +129,26 @@ struct DataHolder
 				newColors[j + i*elems] = colorList[j + i*layerElems];
 			}
 		}
-
 		colorList = newColors;
+
+		std::vector<std::string> newEntityStrings;
+		newEntityStrings.resize(elems * z);
+
+		for (int i = 0; i < zMin; i++)
+		{
+			for (int j = 0; j < elemMin; j++)
+			{
+				newEntityStrings[i*elems + j] = entityStrings[j + i*layerElems];
+			}
+		}
+		for (int i = 0; i < z; i++)
+		{
+			for (int j = 0; j < elems; j++)
+			{
+				newEntityStrings[i*elems + j] = std::to_string(j);
+			}
+		}
+		entityStrings = newEntityStrings;
 
 		// change meta only after resizing because both metas are needed to resize
 		layerX = x;
@@ -158,7 +179,7 @@ struct DataHolder
 		DELIMSET,
 
 		STRINGEDIT,
-
+		ENTITYEDIT,
 	};
 
 	// static funcs
