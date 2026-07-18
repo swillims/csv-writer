@@ -169,7 +169,6 @@ void EntitySet::buttonPress(unsigned int x)
         }
         case(RIGHTUPPERUI):
         {
-            // add code later after making final scene
             break;
         }
             case(LAYERLEFT):
