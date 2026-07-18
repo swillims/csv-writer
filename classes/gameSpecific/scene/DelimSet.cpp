@@ -1,5 +1,6 @@
 #include "DelimSet.h"
 
+#include "EntitySet.h"
 #include "StringEditor.h"
 #include "singleton/staticInput.h"
 
@@ -187,7 +188,8 @@ void DelimSet::buttonPress(unsigned int x)
         }
         case RIGHTUPPERUI:
         {
-            // add code later
+            EntitySet* entitySet = new EntitySet(this);
+            DataHolder::SceneQueue(entitySet, false);
             break;
         }
         case ENTITYEDIT:

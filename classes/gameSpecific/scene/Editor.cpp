@@ -55,7 +55,7 @@ void Editor::onLoad()
             batchTextures[i].push_back(StaticDraw::getShader(uiName));
             StaticDraw::useShader(batchTextures[i][j]);
             GLint colorLoc = glGetUniformLocation(batchTextures[i][j], "color");
-            glm::vec4 color = DataHolder::god.colorList[i*layers+j];
+            glm::vec4 color = DataHolder::god.colorList[i*tileTypes+j];
             glUniform4f(colorLoc, color.r, color.g, color.b, color.a);
         }
     }

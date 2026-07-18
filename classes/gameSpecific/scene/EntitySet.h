@@ -12,15 +12,15 @@ struct EntitySet : BackSceneStrict
     std::string upperLeftStr = "Back";
     std::string upperCenterStr = "Layer";
     std::string upperRightStr = "Next";
-    std::vector<std::string> elemStrings;
-
-    // this number is a guestimate. It is based on font and guessed average size+distance of chars.
+    // stringToFloatConstant is a guestimate. It is based on font and guessed average size+distance of chars.
     // - more professional answer would be to create a separate channel textChannel for each UIXRef and calculate based on width.
     // -- This is for personal use and that is 2/10 difficult task, so I'm not doing it.
     float stringToFloatConstant = 0.6f;
+    std::vector<float> stringRatio;
+    std::vector<std::string> elemStrings;
 
     // data
-    // handled externally directly in dataholder
+    int layerSelected = 0;
 
     // rendering
     unsigned int shaderSimpleRef;
@@ -36,5 +36,4 @@ struct EntitySet : BackSceneStrict
 
     //DelimSet Specific
     void buttonPress(unsigned int x);
-
 };

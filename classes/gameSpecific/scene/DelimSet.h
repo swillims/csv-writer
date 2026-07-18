@@ -23,7 +23,7 @@ struct  DelimSet : BackSceneStrict
     float entityFloat = 1.0f;
     float lineFloat = 1.0f;
     float layerFloat = 1.0f;
-    // this number is a guestimate. It is based on font and guessed average size+distance of chars.
+    // stringToFloatConstant is a guestimate. It is based on font and guessed average size+distance of chars.
     // - more professional answer would be to create a separate channel textChannel for each UIXRef and calculate based on width.
     // -- This is for personal use and that is 2/10 difficult task, so I'm not doing it.
     float stringToFloatConstant = 0.6f;

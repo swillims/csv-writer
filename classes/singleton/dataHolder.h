@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <random>
 #include<any>
+#include <iostream>
 
 struct DataHolder
 {
@@ -122,30 +123,34 @@ struct DataHolder
 			}
 		}
 
+		std::cout << "A ";
 		for (int i = 0; i < zMin; i++) // for each layer
 		{
 			for (int j = 0; j < elemMin; j++)
 			{
+				std::cout << "a ";
 				newColors[j + i*elems] = colorList[j + i*layerElems];
+				std::cout << "b\n";
 			}
 		}
+		std::cout << "B\n";
 		colorList = newColors;
 
-		std::vector<std::string> newEntityStrings;
-		newEntityStrings.resize(elems * z);
+		std::vector<std::string> newEntityStrings(elems * z, "");
+
+		for (int i = 0; i < z; i++)
+		{
+			for (int j = 0; j < elems; j++)
+			{
+				newEntityStrings[i * elems + j] = std::to_string(j);
+			}
+		}
 
 		for (int i = 0; i < zMin; i++)
 		{
 			for (int j = 0; j < elemMin; j++)
 			{
-				newEntityStrings[i*elems + j] = entityStrings[j + i*layerElems];
-			}
-		}
-		for (int i = 0; i < z; i++)
-		{
-			for (int j = 0; j < elems; j++)
-			{
-				newEntityStrings[i*elems + j] = std::to_string(j);
+				newEntityStrings[i * elems + j] = entityStrings[i * layerElems + j];
 			}
 		}
 		entityStrings = newEntityStrings;
