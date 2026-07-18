@@ -52,5 +52,5 @@ is not CC0 or similar, the license should be packaged next to the asset.
 Third-Party Libraries
 ================================================================================
 
-This repository uses several third party libraries inherited from BGL.
-Respect their licenses.
+This repository uses and includes several third party libraries from BGL.
+Comply with their licenses.
