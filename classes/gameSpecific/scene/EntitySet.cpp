@@ -49,7 +49,7 @@ void EntitySet::onLoad()
                             .appendType<TexUVNode>(.75f, 1.0f, 0.0f,.25f,LAYERLEFT).back()
                             .back()
                         .appendType<UIXRatio>(8)
-                            .appendType<UITextOneLine>(DataHolder::ENTITYEDIT,upperCenterStr,.8f).back()
+                            .appendType<UITextOneLine>(DataHolder::ENTITYEDIT,upperCenterStr,.6f).back()
                             .back()
                         .appendType<UIXRatio>(1)
                             .appendType<TexUVNode>(.25f,.5f,0.0f,.25f,LAYERRIGHT).back()
@@ -144,7 +144,7 @@ void EntitySet::aspectChange()
         stringRatio[i] = static_cast<float>(elemStrings[i].size()) * stringToFloatConstant;
     }
 
-    upperCenterStr = "Layer: " + std::to_string(layerSelected);
+    upperCenterStr = "Set Entity Values in Layer " + std::to_string(layerSelected);
 
     // make new batches
     batch.clear();
@@ -160,7 +160,6 @@ void EntitySet::buttonPress(unsigned int x)
     {
         return;
     }
-    std::cout << x << std::endl;
     switch (x)
     {
         case(LEFTUPPERUI):
