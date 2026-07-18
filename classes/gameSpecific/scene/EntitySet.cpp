@@ -144,6 +144,8 @@ void EntitySet::aspectChange()
         stringRatio[i] = static_cast<float>(elemStrings[i].size()) * stringToFloatConstant;
     }
 
+    upperCenterStr = "Layer: " + std::to_string(layerSelected);
+
     // make new batches
     batch.clear();
     StaticWrite::SetUpChannel(DataHolder::ENTITYEDIT);
@@ -173,12 +175,16 @@ void EntitySet::buttonPress(unsigned int x)
         }
             case(LAYERLEFT):
         {
-            // add code for layer -1 copy from 1st scene probably
+            layerSelected--;
+            if (layerSelected == -1){layerSelected=DataHolder::god.layerZ-1;}
+            aspectChange();
             break;
         }
             case(LAYERRIGHT):
         {
-            // add code for layer +1 copy from 1st scene probably
+            layerSelected++;
+            if (layerSelected == DataHolder::god.layerZ){layerSelected=0;}
+            aspectChange();
             break;
         }
     }
