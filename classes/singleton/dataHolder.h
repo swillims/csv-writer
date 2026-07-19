@@ -177,9 +177,10 @@ struct DataHolder
 		MEANMENU,
 		EDITOR,
 		DELIMSET,
+		ENTITYEDIT,
+		EXPORT,
 
 		STRINGEDIT,
-		ENTITYEDIT,
 	};
 
 	// static funcs
