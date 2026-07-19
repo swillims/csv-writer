@@ -40,7 +40,7 @@ struct DataHolder
 	std::string entityDelim = entityDelimDefault;
 	const std::string lineDelimDefault = "\n";
 	std::string lineDelim = lineDelimDefault;
-	const std::string layerDelimDefault = "\n\t";
+	const std::string layerDelimDefault = "\n\n";
 	std::string layerDelim = layerDelimDefault; // <- "pipe" not "l"
 
 	// Entity Strings
