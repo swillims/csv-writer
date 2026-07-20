@@ -199,7 +199,7 @@ void EntitySet::buttonPress(unsigned int x)
         if (i >= DataHolder::god.layerElems)
             return;
 
-        int index = i + (layerSelected * DataHolder::god.layerZ);
+        int index = i + (layerSelected * DataHolder::god.layerElems);
         if (isReset)
         {
             DataHolder::god.entityStrings[index] = std::to_string(i);

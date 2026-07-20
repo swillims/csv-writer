@@ -3,6 +3,8 @@
 #include "singleton/dataHolder.h"
 #include "singleton/staticInput.h"
 
+#include "singleton/staticFile.h"
+
 enum BUTTONS
 {
     LEFTUPPERUI,
@@ -58,21 +60,12 @@ void Export::onLoad()
     holder.key = -1;
 
     holder.appendType<UIXSplits>(std::vector<float>{.7f,.3f})
-        .appendType<UIXRefRatio>(fileNameFloat)
-            .appendType<UITextOneLine>(DataHolder::EXPORT, filePathString, .6 ).back()
+        .appendType<UIXRefRatio>(filePathFloat)
+            .appendType<UITextOneLine>(DataHolder::EXPORT, filePathString, 1.0f ).back()
             .back()
         .appendType<UIXRatio>(2)
             .appendType<UIStack>()
                 .appendType<TexUVNode>(0,.5f,.75,1.0f,FIlEFOLDER).back()
-                .appendType<UITextOneLineConst>(DataHolder::EXPORT, "Set", .6 )
-    ;
-    holder.appendType<UIXSplits>(std::vector<float>{.7f,.3f})
-        .appendType<UIXRefRatio>(fileNameFloat)
-            .appendType<UITextOneLine>(DataHolder::EXPORT, fileNameString, .6 ).back()
-            .back()
-        .appendType<UIXRatio>(2)
-            .appendType<UIStack>()
-                .appendType<TexUVNode>(0,.5f,.75,1.0f,FILENAME).back()
                 .appendType<UITextOneLineConst>(DataHolder::EXPORT, "Set", .6 )
     ;
     holder.appendType<UIXSplits>(std::vector<float>{.7f,.3f})
@@ -140,10 +133,8 @@ void Export::aspectChange()
 {
     BackSceneStrict::aspectChange();
 
-    fileNameString = "File name: " + fileName;
     filePathString = "File path: " + filePath;
 
-    fileNameFloat = static_cast<float>(fileNameString.length()) * stringToFloatConstant;
     filePathFloat = static_cast<float>(filePathString.length()) * stringToFloatConstant;
 
     endOfLineString = hangingDelimEndOfLine ? "True" : "False";
@@ -169,19 +160,66 @@ void Export::buttonPress(unsigned int x)
         }
         case RIGHTUPPERUI:
         {
+            save();
             break;
         }
         case FIlEFOLDER:
         {
+            std::string file = StaticFile::NavigateSaveFile();
+            if (file.length() > 0)
+            {
+                filePath = file;
+            }
+            aspectChange();
             break;
         }
         case HANGINGENTITYDELIM:
         {
+            hangingDelimEndOfLine = !hangingDelimEndOfLine;
+            aspectChange();
             break;
         }
         case HANGINGLINEDELIM:
         {
+            hangingDelimEndOfLayer = !hangingDelimEndOfLayer;
+            aspectChange();
             break;
         }
+    }
+}
+
+void Export::save()
+{
+    std::string data;
+    const DataHolder& g = DataHolder::god;
+
+    for (int z = 0; z < g.layerZ; z++)
+    {
+        for (int y = 0; y < g.layerY; y++)
+        {
+            for (int x = 0; x < g.layerX; x++)
+            {
+                int index = y * g.layerX + x;
+                int entity = g.layers[z][index];
+
+                data += DataHolder::god.entityStrings[(z*g.layerElems)+entity];
+
+                // add delimiter unless this is the last entity on the line
+                if (x < g.layerX - 1 || hangingDelimEndOfLine){data += g.entityDelim;}
+            }
+
+            // add delim after line
+            if (y < g.layerY - 1 || hangingDelimEndOfLayer) {data += g.lineDelim;}
+        }
+
+        // add delim after layers
+        if (z < g.layerZ - 1){data += g.layerDelim;}
+    }
+
+    if (filePath.length() > 0)
+    {
+        StaticFile::Write(filePath, data);
+        filePath = "";
+        aspectChange();
     }
 }

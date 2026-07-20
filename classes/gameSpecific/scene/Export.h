@@ -2,6 +2,7 @@
 #include "uiHelper.h"
 #include "scene/scene.h"
 
+
 struct Export : BackSceneStrict
 {
     Export(BackSceneStrict* scene) : BackSceneStrict(scene){};
@@ -11,9 +12,6 @@ struct Export : BackSceneStrict
     std::string filePath;
     std::string filePathString;
     float filePathFloat;
-    std::string fileName;
-    std::string fileNameString;
-    float fileNameFloat;
     // stringToFloatConstant is a guestimate. It is based on font and guessed average size+distance of chars.
     // - more professional answer would be to create a separate channel textChannel for each UIXRef and calculate based on width.
     // -- This is for personal use and that is 2/10 difficult task, so I'm not doing it.
@@ -39,4 +37,5 @@ struct Export : BackSceneStrict
 
     //Editor
     void buttonPress(unsigned int x);
+    void save();
 };
