@@ -1,5 +1,6 @@
 #include "EntitySet.h"
 
+#include "Export.h"
 #include "StringEditor.h"
 #include "singleton/dataHolder.h"
 #include "singleton/staticInput.h"
@@ -169,6 +170,8 @@ void EntitySet::buttonPress(unsigned int x)
         }
         case(RIGHTUPPERUI):
         {
+            Export* exp = new Export(this);
+            DataHolder::SceneQueue(exp,false);
             break;
         }
             case(LAYERLEFT):

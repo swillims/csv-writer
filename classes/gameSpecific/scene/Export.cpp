@@ -47,15 +47,56 @@ void Export::onLoad()
             .appendType<UIXRatio>(2)
                 .appendType<UIStack>()
                     .appendType<TexUVNode>(0,.5f,.75,1.0f,RIGHTUPPERUI).back()
-                    .appendType<UITextOneLineConst>(DataHolder::EXPORT, "Export", .8 ).back()
+                    .appendType<UITextOneLineConst>(DataHolder::EXPORT, "Export", .6 ).back()
                     .back()
                 .back()
             .back()
         .appendType<UIYHolder>(UILAST)
     ;
+    // using multiple statement +UILAST pattern instead of html-like because I thought I would need dynamically loaded UI elements and it is too much work to refactor
     UIElement& holder = ui.findByKey(UILAST);
     holder.key = -1;
 
+    holder.appendType<UIXSplits>(std::vector<float>{.7f,.3f})
+        .appendType<UIXRefRatio>(fileNameFloat)
+            .appendType<UITextOneLine>(DataHolder::EXPORT, filePathString, .6 ).back()
+            .back()
+        .appendType<UIXRatio>(2)
+            .appendType<UIStack>()
+                .appendType<TexUVNode>(0,.5f,.75,1.0f,FIlEFOLDER).back()
+                .appendType<UITextOneLineConst>(DataHolder::EXPORT, "Set", .6 )
+    ;
+    holder.appendType<UIXSplits>(std::vector<float>{.7f,.3f})
+        .appendType<UIXRefRatio>(fileNameFloat)
+            .appendType<UITextOneLine>(DataHolder::EXPORT, fileNameString, .6 ).back()
+            .back()
+        .appendType<UIXRatio>(2)
+            .appendType<UIStack>()
+                .appendType<TexUVNode>(0,.5f,.75,1.0f,FILENAME).back()
+                .appendType<UITextOneLineConst>(DataHolder::EXPORT, "Set", .6 )
+    ;
+    holder.appendType<UIXSplits>(std::vector<float>{.7f,.3f})
+        .appendType<UIBuffer>(.05)
+            .appendType<UIXRatio>(7)
+                .appendType<UITextOneLineConst>(DataHolder::EXPORT, "Include trailing entity delimiter on each line?", .3, XLEFT).back()
+                .back()
+            .back()
+        .appendType<UIXRatio>(2)
+            .appendType<UIStack>()
+                .appendType<TexUVNode>(0,.5f,.75,1.0f,HANGINGENTITYDELIM).back()
+                .appendType<UITextOneLine>(DataHolder::EXPORT, endOfLineString, .6 )
+    ;
+    holder.appendType<UIXSplits>(std::vector<float>{.7f,.3f})
+        .appendType<UIBuffer>(.05)
+            .appendType<UIXRatio>(7)
+                .appendType<UITextOneLineConst>(DataHolder::EXPORT, "Include trailing line delimiter at the end of each layer?", .3, XLEFT).back()
+                .back()
+            .back()
+        .appendType<UIXRatio>(2)
+            .appendType<UIStack>()
+                .appendType<TexUVNode>(0,.5f,.75,1.0f,HANGINGLINEDELIM).back()
+                .appendType<UITextOneLine>(DataHolder::EXPORT, endOfLayerString, .6 ).back()
+    ;
     // add code to append to Holder
 
     aspectChange();
@@ -79,7 +120,7 @@ void Export::render(float time, bool updateDisplay)
 
     // write text
     StaticWrite::StartWrite();
-    StaticWrite::DrawChannel(DataHolder::ENTITYEDIT, glm::vec3(0.0f, 0.0f, 0.0f));
+    StaticWrite::DrawChannel(DataHolder::EXPORT, glm::vec3(0.0f, 0.0f, 0.0f));
 
     BackSceneStrict::render(time, updateDisplay);
 }
@@ -99,12 +140,18 @@ void Export::aspectChange()
 {
     BackSceneStrict::aspectChange();
 
-    // add code for setting strings
+    fileNameString = "File name: " + fileName;
+    filePathString = "File path: " + filePath;
 
+    fileNameFloat = static_cast<float>(fileNameString.length()) * stringToFloatConstant;
+    filePathFloat = static_cast<float>(filePathString.length()) * stringToFloatConstant;
+
+    endOfLineString = hangingDelimEndOfLine ? "True" : "False";
+    endOfLayerString = hangingDelimEndOfLayer ? "True" : "False";
 
     // make new batches
     batch.clear();
-    StaticWrite::SetUpChannel(DataHolder::ENTITYEDIT);
+    StaticWrite::SetUpChannel(DataHolder::EXPORT);
     StaticDraw::updateView();
     ui.adjustNodeDefault();
     ui.renderVerts(batch);
@@ -112,5 +159,29 @@ void Export::aspectChange()
 
 void Export::buttonPress(unsigned int x)
 {
-
+    if (x==-1){return;}
+    switch (x)
+    {
+        case LEFTUPPERUI:
+        {
+            DataHolder::SceneQueue(previous,true);
+            break;
+        }
+        case RIGHTUPPERUI:
+        {
+            break;
+        }
+        case FIlEFOLDER:
+        {
+            break;
+        }
+        case HANGINGENTITYDELIM:
+        {
+            break;
+        }
+        case HANGINGLINEDELIM:
+        {
+            break;
+        }
+    }
 }

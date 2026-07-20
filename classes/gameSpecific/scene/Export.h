@@ -4,11 +4,26 @@
 
 struct Export : BackSceneStrict
 {
+    Export(BackSceneStrict* scene) : BackSceneStrict(scene){};
+
     // ui
     UIBase ui;
     std::string filePath;
+    std::string filePathString;
+    float filePathFloat;
     std::string fileName;
-    std::string fileExtension;
+    std::string fileNameString;
+    float fileNameFloat;
+    // stringToFloatConstant is a guestimate. It is based on font and guessed average size+distance of chars.
+    // - more professional answer would be to create a separate channel textChannel for each UIXRef and calculate based on width.
+    // -- This is for personal use and that is 2/10 difficult task, so I'm not doing it.
+    float stringToFloatConstant = 0.6f;
+
+    bool hangingDelimEndOfLine = false;
+    std::string endOfLineString;
+
+    bool hangingDelimEndOfLayer = false;
+    std::string endOfLayerString;
 
     // rendering
     unsigned int shaderSimpleRef;
