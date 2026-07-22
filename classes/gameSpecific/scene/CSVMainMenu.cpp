@@ -79,11 +79,11 @@ void CSVMainMenu::onLoad()
                         .appendType<UITextOneLine>(DataHolder::MEANMENU, columnTitle, .5f ).back()
                         .back()
                     .appendType<UIXHolder>()
-                        .appendType<UIYHolder>()
+                        /*.appendType<UIYHolder>()
                             .appendType<TexUVNode>(.5f,.75f,0.0f,.25f,COLLUMNONEUP).back()
                             .appendType<UITextOneLine>(DataHolder::MEANMENU, columnValue1, .8 ).back()
                             .appendType<TexUVNode>(0.0f,.25f,0.0f,0.25f,COLLUMNONEDOWN).back()
-                            .back()
+                            .back()*/
                         .appendType<UIYHolder>()
                             .appendType<TexUVNode>(.5f,.75f,0.0f,.25f,COLLUMNTWOUP).back()
                             .appendType<UITextOneLine>(DataHolder::MEANMENU, columnValue2, .8 ).back()
@@ -106,11 +106,11 @@ void CSVMainMenu::onLoad()
                         .appendType<UITextOneLine>(DataHolder::MEANMENU, rowsTitle, .5f ).back()
                         .back()
                     .appendType<UIXHolder>()
-                        .appendType<UIYHolder>()
+                        /*.appendType<UIYHolder>()
                             .appendType<TexUVNode>(.5f,.75f,0.0f,.25f,ROWONEUP).back()
                             .appendType<UITextOneLine>(DataHolder::MEANMENU, rowsValue1, .8 ).back()
                             .appendType<TexUVNode>(0.0f,.25f,0.0f,0.25f,ROWONEDOWN).back()
-                            .back()
+                            .back()*/
                         .appendType<UIYHolder>()
                             .appendType<TexUVNode>(.5f,.75f,0.0f,.25f,ROWTWOUP).back()
                             .appendType<UITextOneLine>(DataHolder::MEANMENU, rowsValue2, .8 ).back()
@@ -204,80 +204,80 @@ void CSVMainMenu::buttonPress(unsigned int x)
             break;
         case COLLUMNTWOUP:
             xSize += 100;
-            if (xSize > 9999){xSize = 9999;}
+            if (xSize > 999){xSize = 999;}
             aspectChange();
             break;
         case COLLUMNTHREEUP:
             xSize += 10;
-            if (xSize > 9999){xSize = 9999;}
+            if (xSize > 999){xSize = 999;}
             aspectChange();
             break;
         case COLLUMNFOURUP:
             xSize += 1;
-            if (xSize > 9999){xSize = 9999;}
+            if (xSize > 999){xSize = 999;}
             aspectChange();
             break;
 
         case COLLUMNONEDOWN:
             xSize -= 1000;
-            if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
+            if (xSize > 999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
             aspectChange();
             break;
         case COLLUMNTWODOWN:
             xSize -= 100;
-            if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
+            if (xSize > 999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
             aspectChange();
             break;
         case COLLUMNTHREEDOWN:
             xSize -= 10;
-            if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
+            if (xSize > 999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
             aspectChange();
             break;
         case COLLUMNFOURDOWN:
             xSize -= 1;
-            if (xSize > 9999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
+            if (xSize > 999 || xSize == 0){xSize = 1;} // 9999 checks for underflow
             aspectChange();
             break;
 
         case ROWONEUP:
             ySize += 1000;
-            if (ySize > 9999){ySize = 9999;}
+            if (ySize > 999){ySize = 999;}
             aspectChange();
             break;
         case ROWTWOUP:
             ySize += 100;
-            if (ySize > 9999){ySize = 9999;}
+            if (ySize > 999){ySize = 999;}
             aspectChange();
             break;
         case ROWTHREEUP:
             ySize += 10;
-            if (ySize > 9999){ySize = 9999;}
+            if (ySize > 999){ySize = 999;}
             aspectChange();
             break;
         case ROWFOURUP:
             ySize += 1;
-            if (ySize > 9999){ySize = 9999;}
+            if (ySize > 999){ySize = 999;}
             aspectChange();
             break;
 
         case ROWONEDOWN:
             ySize -= 1000;
-            if (ySize > 9999 || ySize == 0){ySize = 1;}
+            if (ySize > 999 || ySize == 0){ySize = 1;}
             aspectChange();
             break;
         case ROWTWODOWN:
             ySize -= 100;
-            if (ySize > 9999 || ySize == 0){ySize = 1;}
+            if (ySize > 999 || ySize == 0){ySize = 1;}
             aspectChange();
             break;
         case ROWTHREEDOWN:
             ySize -= 10;
-            if (ySize > 9999 || ySize == 0){ySize = 1;}
+            if (ySize > 999 || ySize == 0){ySize = 1;}
             aspectChange();
             break;
         case ROWFOURDOWN:
             ySize -= 1;
-            if (ySize > 9999 || ySize == 0){ySize = 1;}
+            if (ySize > 999 || ySize == 0){ySize = 1;}
             aspectChange();
             break;
 

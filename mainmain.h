@@ -64,6 +64,9 @@ static int mainmainmain()
     // variable for loading settings
     std::string settingsFileName;
 
+    g.setFrameCap(30);
+    g.setPhysicsCap(0);
+
     // load graphics settings
     settingsFileName = "metadata/graphicsettings";
     if (util::fileExists(settingsFileName))
