@@ -284,8 +284,13 @@ void Editor::clickHeld(unsigned int x)
 
 void Editor::mapPress()
 {
-    float fx = (mouseX - mapDims.xMin) / mapDims.xSize;
-    float fy = (mouseY - mapDims.yMin) / mapDims.ySize;
+    // looks weird but there is a bug with implicit mouse double to float conversion if we don't do it at start
+    float mouseFloatX = mouseX;
+    float mouseFloatY = mouseY;
+    if (mouseFloatX < mapDims.xMin || mouseFloatY < mapDims.yMin){return;}
+    if (mouseFloatX >= mapDims.xMin + mapDims.xSize || mouseFloatY >= mapDims.yMin + mapDims.ySize){return;}
+    float fx = (mouseFloatX - mapDims.xMin) / mapDims.xSize;
+    float fy = (mouseFloatY - mapDims.yMin) / mapDims.ySize;
 
     int ix = xSize * fx;
     int iy = ySize * (1.0f - fy);
